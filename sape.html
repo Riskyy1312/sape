@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sape - Harmoni Budaya Dayak</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        /* Light Theme */
+        :root {
+            --primary: #333333;       /* Warna utama: hitam lembut */
+            --secondary: #666666;     /* Sekunder: abu-abu medium */
+            --accent: #4CAF50;        /* Aksen: hijau segar yang nggak mencolok */
+            --bg: #FFFFFF;            /* Background: putih bersih */
+            --text: #212121;          /* Teks: hitam pekat */
+            --card-bg: #F9F9F9;       /* Card Background: putih dengan sedikit gradasi */
+            --border: #E0E0E0;        /* Border: abu terang */
+        }
+
+        /* Dark Theme */
+        [data-theme="dark"] {
+            --primary: #EEEEEE;       /* Utama: abu terang untuk kontras */
+            --secondary: #CCCCCC;     /* Sekunder: abu medium terang */
+            --accent: #4CAF50;        /* Aksen tetap hijau segar */
+            --bg: #121212;            /* Background: hitam pekat */
+            --text: #FFFFFF;          /* Teks: putih */
+            --card-bg: #1E1E1E;       /* Card Background: hitam dengan sentuhan gradasi */
+            --border: #333333;        /* Border: abu gelap */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            transition: background 0.5s ease, color 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+        }
+
+        .hero {
+            height: 90vh;
+            background: linear-gradient(135deg, rgba(42, 93, 103, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%), 
+                        url('https://source.unsplash.com/random/1920x1080/?borneo,forest') center/cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .hero {
+            background: linear-gradient(135deg, rgba(26, 26, 26, 0.9) 0%, rgba(0, 0, 0, 0.7) 100%), 
+                        url('https://source.unsplash.com/random/1920x1080/?borneo,night') center/cover;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, var(--bg), transparent);
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .section {
+            padding: 8rem 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 4rem;
+            margin: 3rem 0;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            transition: background 0.5s ease;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 4rem;
+            align-items: center;
+        }
+
+        h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            position: relative;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        img {
+            width: 85%;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            filter: brightness(var(--img-brightness, 1));
+        }
+
+        [data-theme="dark"] img {
+            --img-brightness: 0.9;
+        }
+
+        img:hover {
+            transform: scale(1.02);
+        }
+
+        .highlight {
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+        .deco-line {
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            margin: 2rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 2rem;
+            }
+            
+            .theme-toggle {
+                top: 15px;
+                right: 15px;
+                padding: 10px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+    <section class="hero" data-aos="zoom-in">
+        <div class="container">
+            <h1 data-aos="fade-up" data-aos-delay="300">Sape Dayak</h1>
+            <p data-aos="fade-up" data-aos-delay="500">Melodi yang Menyatu dengan Alam</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <!-- Asal Usul -->
+        <section class="section">
+            <div class="card" data-aos="fade-up">
+                <h2>Asal Usul & Sejarah</h2>
+                <div class="deco-line"></div>
+                <div class="grid">
+                    <img src="1.jpg" alt="Sape Tradisional" data-aos="zoom-in-right">
+                    <div data-aos="fade-left">
+                        <p>Sape adalah alat musik tradisional khas suku Dayak di Kalimantan, khususnya <span class="highlight"> Dayak Kayaan di wilayah Sungai Kapuas Hulu. </span> Alat musik ini telah menjadi bagian integral dari budaya Dayak dan sering digunakan dalam berbagai upacara adat serta ritual.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pembuatan -->
+        <section class="section">
+            <div class="card" data-aos="fade-up">
+                <h2>Bahan dan Proses Pembuatan</h2>
+                <div class="deco-line"></div>
+                <div class="grid">
+                    <div data-aos="fade-right">
+                        <p>Sape biasanya dibuat dari <span class="highlight">kayu adau</span>, yang banyak ditemukan di Kalimantan. Kayu ini dipahat membentuk badan instrumen dengan panjang sekitar satu meter atau lebih. Ciri khasnya adalah ukiran motif Dayak yang menghiasi permukaannya, memberikan nilai artistik dan estetika tinggi.</p>
+                    </div>
+                    <img src="2.jpg" alt="Proses Pembuatan" data-aos="zoom-in-left">
+                </div>
+            </div>
+        </section>
+
+        <!-- Fungsi Budaya -->
+        <section class="section">
+            <div class="card" data-aos="fade-up">
+                <h2>Struktur dan Jumlah Senar</h2>
+                <div class="deco-line"></div>
+                <div class="grid">
+                    <img src="3.jpg" alt="Budaya Dayak" data-aos="zoom-in-right">
+                    <div data-aos="fade-left">
+                        <p>Awalnya, sape memiliki dua atau tiga senar, namun seiring perkembangan zaman, jumlah senar bertambah menjadi empat hingga enam untuk menghasilkan variasi nada yang lebih kaya. Uniknya, sape menggunakan <span class="highlight">tangga nada pentatonik</span>, yang terdiri dari lima nada dalam satu oktaf, berbeda dengan tangga nada diatonik pada musik Barat.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="card" data-aos="fade-up">
+                <h2>Teknik Permainan dan Fungsi Musik</h2>
+                <div class="deco-line"></div>
+                <div class="grid">
+                    <div data-aos="fade-right">
+                        <p>Sape dimainkan dengan cara dipetik, mirip seperti gitar, namun teknik permainannya khas dan disebut <span class="highlight">"sapuan"</span>. Alunan musik sape sering digunakan sebagai pengiring tarian tradisional dan upacara adat, menciptakan suasana yang sakral dan khidmat.</p>
+                    </div>
+                    <img src="4.jpeg" alt="Proses Pembuatan" data-aos="zoom-in-left">
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="card" data-aos="fade-up">
+                <h2>Peran dalam Budaya Dayak</h2>
+                <div class="deco-line"></div>
+                <div class="grid">
+                    <img src="5.jpg" alt="Budaya Dayak" data-aos="zoom-in-right">
+                    <div data-aos="fade-left">
+                        <p>Dalam budaya Dayak, sape tidak hanya berfungsi sebagai alat musik, tetapi juga sebagai media ekspresi seni dan identitas budaya. Musik yang dihasilkan sape dipercaya mampu <span class="highlight">menjaga keseimbangan alam</span> dan digunakan dalam <span class="highlight">ritual penyembuhan tradisional.</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="card" data-aos="fade-up">
+                <h2>Adaptasi dalam Musik Modern</h2>
+                <div class="deco-line"></div>
+                <div class="grid">
+                    <div data-aos="fade-right">
+                        <p>Menariknya, sape kini tidak hanya terbatas pada konteks tradisional. Banyak musisi muda yang menggabungkan suara khas sape dengan genre musik kontemporer, seperti jazz dan pop, sehingga memperkenalkan alat musik ini ke audiens yang lebih luas dan menjaga kelestariannya di era modern.</p>
+                    </div>
+                    <img src="6.jpeg" alt="Proses Pembuatan" data-aos="zoom-in-left">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            offset: 100,
+            once: false,
+            easing: 'ease-out-quart'
+        });
+
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Update button emoji
+            const button = document.querySelector('.theme-toggle');
+            button.textContent = newTheme === 'dark' ? '🌞' : '🌙';
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.setAttribute('data-theme', savedTheme);
+        document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '🌞' : '🌙';
+    </script>
+</body>
+</html>
