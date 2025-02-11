@@ -335,7 +335,7 @@
     }
 }
 
-.tiktok-btn {
+    .tiktok-btn {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -366,6 +366,165 @@
 /* Dark mode adjustment */
 [data-theme="dark"] .tiktok-btn:hover {
     background-color: var(--bg);
+}
+
+.sources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.source-card {
+    display: flex;
+    flex-direction: column; /* Ubah ke column layout */
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.source-image {
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    order: 1; /* Pastikan gambar di atas */
+}
+
+.source-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.source-content {
+    order: 2; /* Konten di bawah gambar */
+    padding: 0 0.5rem;
+}
+
+.source-content h3 {
+    font-size: 1.2em;
+    margin-bottom: 0.3rem;
+    color: var(--text);
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.source-domain {
+    font-size: 0.85em;
+    color: var(--secondary);
+    font-weight: 500;
+}
+
+.source-card:hover .source-domain {
+    color: var(--accent);
+    opacity: 1;
+}
+
+/* Hover effect */
+.source-card:hover .source-image img {
+    transform: scale(1.05);
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+    .source-image {
+        height: 150px;
+    }
+    
+    .source-content h3 {
+        font-size: 1.1em;
+    }
+}
+
+/* Ganti .ai-chatbot sebelumnya dengan ini */
+.ai-chatbot {
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-top: 2rem;
+}
+
+.chat-messages {
+    height: 300px;
+    overflow-y: auto;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-top: 1.5rem;
+    background: var(--bg);
+}
+
+.chat-input {
+    display: flex;
+    margin-top: 1px;
+    gap: 1rem;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.send-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+}
+
+/* Style message */
+.message {
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 12px;
+    max-width: 80%;
+    animation: fadeIn 0.3s ease;
+}
+
+.message.user {
+    background: var(--accent);
+    color: white;
+    margin-left: auto;
+}
+
+.message.bot {
+    background: var(--border);
+    color: var(--text);
+    margin-right: auto;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar styling */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: var(--border);
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 3px;
 }
     </style>
 </head>
@@ -528,6 +687,34 @@
             </div>
         </section>
 
+        <section class="section">
+            <div class="card" data-aos="fade-up"> <!-- Tambahkan data-aos di sini -->
+                <h2>Sumber</h2>
+                <div class="deco-line"></div>
+                <div class="sources-grid" id="linkPreviews"></div>
+            </div>
+        </section>
+        
+        <section class="section">
+            <div class="card" data-aos="fade-up">
+                <h2>Tanya Jawab Sape Dayak</h2>
+                <div class="deco-line"></div>
+                
+                <div class="ai-chatbot">
+                    <div class="chat-input">
+                        <input type="text" placeholder="Tanyain ke AI!">
+                        <button class="tiktok-btn send-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+                            </svg>
+                            Kirim
+                        </button>
+                    </div>
+                    <div class="chat-messages"></div>
+                </div>
+            </div>
+        </section>
+
         <footer class="copyright">
             <div class="container">
                 <p data-aos="fade-up">
@@ -564,6 +751,50 @@
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
         document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '🌞' : '🌙';
+
+        const references = [
+            "https://kaltim.suara.com/read/2024/02/05/193000/keunikan-sape-alat-musik-tradisional-kalimantan-yang-mirip-gitar?utm_source=chatgpt.com",
+            "https://katadata.co.id/berita/daerah/631588f36ba83/mengenal-sape-alat-musik-tradisional-suku-dayak-dan-cara-memainkannya?utm_source=chatgpt.com",
+            "https://diskominfo.kaltimprov.go.id/budaya/sape-alat-musik-kalimantan-mampu-berkolaborasi-dengan-musik-moderen?utm_source=chatgpt.com"
+        ];
+
+        async function generatePreviews() {
+    const container = document.getElementById('linkPreviews');
+    
+    try {
+        for(const url of references) {
+            const response = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(url)}`);
+            const { data } = await response.json();
+            
+            const card = document.createElement('a');
+            card.className = 'source-card';
+            card.href = url;
+            card.target = '_blank';
+            
+            card.innerHTML = `
+                <div class="source-image">
+                    <img src="${data.image?.url || 'placeholder.jpg'}" 
+                         alt="${data.title}" 
+                         onerror="this.src='placeholder.jpg'">
+                </div>
+                <div class="source-content">
+                    <h3>${data.title || 'Artikel Tentang Sape Dayak'}</h3>
+                    <p class="source-domain">${new URL(url).hostname.replace('www.', '').replace('.com', '')}</p>
+                </div>
+            `;
+            
+            container.appendChild(card);
+        }
+    } catch(error) {
+        console.error('Error generating previews:', error);
+        container.innerHTML = `<p class="error">Gagal memuat referensi</p>`;
+    }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+        generatePreviews();
+        AOS.init(); // Pastikan AOS di-init setelah konten dimuat
+    });
     </script>
 </body>
 </html>
