@@ -183,6 +183,157 @@
                 font-size: 1rem;
             }
         }
+
+        /* Penyesuaian Grid */
+
+        .vertical-video-container {
+    width: 85%;
+    max-width: 400px;
+    margin: 0 auto;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    position: relative;
+}
+
+.vertical-video-container::before {
+    content: '';
+    display: block;
+    padding-top: 177.78%; /* 16:9 ratio terbalik untuk vertikal (9/16*100) */
+}
+
+.vertical-video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+.text-content {
+    position: relative;
+    padding-top: 3rem;
+}
+
+.text-content h2 {
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.deco-line {
+    margin: 1.5rem 0 2rem;
+}
+
+.video-details {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.video-details p {
+    margin: 0.8rem 0;
+    font-size: 0.95em;
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .text-content {
+        padding-top: 0;
+        order: 2;
+    }
+    
+    .vertical-video-container {
+        order: 1;
+        max-width: 300px;
+    }
+}
+
+.copyright {
+    padding: 4rem 0;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    margin: 6rem -2rem 0;
+    background: var(--card-bg);
+    position: relative;
+    width: calc(100% + 4rem);
+    left: -2rem;
+}
+
+.copyright::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    left: 0;
+    width: 100%;
+    height: 30px;
+    background: linear-gradient(to bottom, transparent, var(--card-bg) 70%);
+}
+
+.copyright p {
+    color: var(--secondary);
+    font-size: 0.9em;
+    line-height: 1.8;
+    letter-spacing: 0.5px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.copyright a {
+    color: var(--accent);
+    text-decoration: none;
+    position: relative;
+}
+
+.copyright a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--accent);
+    transition: width 0.3s ease;
+}
+
+.copyright a:hover::after {
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .copyright {
+        padding: 3rem 0;
+        margin: 4rem -1rem 0;
+        width: calc(100% + 2rem);
+        left: -1rem;
+    }
+    
+    .copyright p {
+        font-size: 0.8em;
+        padding: 0 1rem;
+    }
+    
+    .copyright::before {
+        top: -20px;
+        height: 20px;
+    }
+}
     </style>
 </head>
 <body>
@@ -204,7 +355,7 @@
                 <div class="grid">
                     <img src="1.jpg" alt="Sape Tradisional" data-aos="zoom-in-right">
                     <div data-aos="fade-left">
-                        <p>Sape adalah alat musik tradisional khas suku Dayak di Kalimantan, khususnya <span class="highlight"> Dayak Kayaan di wilayah Sungai Kapuas Hulu. </span> Alat musik ini telah menjadi bagian integral dari budaya Dayak dan sering digunakan dalam berbagai upacara adat serta ritual.</p>
+                        <p>Sape adalah alat musik tradisional khas suku Dayak di Kalimantan, khususnya <span class="highlight"> Dayak Kayaan di wilayah Sungai Kapuas Hulu. </span> Alat musik ini telah menjadi bagian yang tidak bisa dipisahkan dari budaya Dayak dan sering digunakan dalam berbagai upacara adat serta ritual.</p>
                     </div>
                 </div>
             </div>
@@ -217,7 +368,7 @@
                 <div class="deco-line"></div>
                 <div class="grid">
                     <div data-aos="fade-right">
-                        <p>Sape biasanya dibuat dari <span class="highlight">kayu adau</span>, yang banyak ditemukan di Kalimantan. Kayu ini dipahat membentuk badan instrumen dengan panjang sekitar satu meter atau lebih. Ciri khasnya adalah ukiran motif Dayak yang menghiasi permukaannya, memberikan nilai artistik dan estetika tinggi.</p>
+                        <p>Sape biasanya dibuat dari <span class="highlight">kayu adau</span>, yang banyak ditemukan di Kalimantan. Kayu ini dipahat membentuk badan Sape dengan panjang sekitar satu meter atau lebih. Ciri khasnya adalah ukiran motif Dayak yang menghiasi permukaannya, memberikan nilai artistik dan estetika tinggi.</p>
                     </div>
                     <img src="2.jpg" alt="Proses Pembuatan" data-aos="zoom-in-left">
                 </div>
@@ -244,7 +395,7 @@
                 <div class="deco-line"></div>
                 <div class="grid">
                     <div data-aos="fade-right">
-                        <p>Sape dimainkan dengan cara dipetik, mirip seperti gitar, namun teknik permainannya khas dan disebut <span class="highlight">"sapuan"</span>. Alunan musik sape sering digunakan sebagai pengiring tarian tradisional dan upacara adat, menciptakan suasana yang sakral dan khidmat.</p>
+                        <p>Sape dimainkan dengan cara dipetik, mirip seperti gitar, namun teknik permainannya khas dan disebut <span class="highlight">"sapuan"</span> yaitu teknik khas di mana jari-jari pemain menyapu senar dengan pola tertentu untuk menghasilkan alunan nada yang khas. Alunan musik sape sering digunakan sebagai pengiring tarian tradisional dan upacara adat, menciptakan suasana yang sakral dan khidmat.</p>
                     </div>
                     <img src="4.jpeg" alt="Proses Pembuatan" data-aos="zoom-in-left">
                 </div>
@@ -276,6 +427,44 @@
                 </div>
             </div>
         </section>
+
+        <!-- Video Section -->
+        <section class="section">
+            <div class="card" data-aos="fade-up">
+                <div class="grid">
+                    <!-- Bagian Kiri (Judul + Deskripsi) -->
+                    <div class="text-content">
+                        <h2 data-aos="fade-right">Demo Permainan Sape</h2>
+                        <div class="deco-line" data-aos="fade-right" data-aos-delay="200"></div>
+                        
+                        <div data-aos="fade-right" data-aos-delay="300">
+                            <div class="video-details">
+                                <p class="highlight">Durasi: 1:03 menit</p>
+                                <p class="highlight">Taragak Pulang (Sape' Cover by Alif Fakod)</p>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- Bagian Kanan (Video) -->
+                    <div class="vertical-video-container" data-aos="zoom-in-left">
+                        <video controls poster="thumbnail.jpg">
+                            <source src="sape-video.mp4" type="video/mp4">
+                            Browser Anda tidak mendukung pemutaran video.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="copyright">
+            <div class="container">
+                <p data-aos="fade-up">
+                    © 2025 By Risky Pratama. All Rights Reserved.<br>
+                    Alat Musik Tradisional Kalimatan - Sape
+                </p>
+            </div>
+        </footer>
+
     </main>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
