@@ -471,6 +471,82 @@
     }
 }
 
+.scroll-dots {
+    display: none;
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 8px;
+}
+
+.scroll-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--secondary);
+    border-radius: 50%;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.scroll-dot.active {
+    opacity: 1;
+    transform: scale(1.2);
+    background: var(--accent);
+}
+
+.scroll-arrows {
+    display: none;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.arrow-btn {
+    pointer-events: all;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.arrow-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .scroll-dots {
+        display: flex;
+    }
+    
+    .sources-grid {
+        scrollbar-width: none;
+    }
+}
+
+@media (min-width: 769px) {
+    .scroll-arrows {
+        display: flex;
+    }
+    
+    .sources-container:hover .arrow-btn {
+        opacity: 1;
+    }
+}
+
 /* Ganti .ai-chatbot sebelumnya dengan ini */
 .ai-chatbot {
     background: var(--card-bg);
@@ -713,10 +789,35 @@
         </section>
 
         <section class="section">
-            <div class="card" data-aos="fade-up"> <!-- Tambahkan data-aos di sini -->
+            <div class="card" data-aos="fade-up">
                 <h2>Sumber</h2>
                 <div class="deco-line"></div>
-                <div class="sources-grid" id="linkPreviews"></div>
+                
+                <!-- Tambah wrapper untuk posisi relatif -->
+                <div class="sources-container" style="position: relative;">
+                    <!-- Scroll arrows -->
+                    <div class="scroll-arrows">
+                        <button class="arrow-btn left-arrow">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M15 18l-6-6 6-6"/>
+                            </svg>
+                        </button>
+                        <button class="arrow-btn right-arrow">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M9 18l6-6-6-6"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="sources-grid" id="linkPreviews"></div>
+                    
+                    <!-- Scroll dots -->
+                    <div class="scroll-dots">
+                        <span class="scroll-dot"></span>
+                        <span class="scroll-dot active"></span>
+                        <span class="scroll-dot"></span>
+                    </div>
+                </div>
             </div>
         </section>
         
@@ -815,6 +916,29 @@
         container.innerHTML = `<p class="error">Gagal memuat referensi</p>`;
     }
 }
+
+const sourcesGrid = document.querySelector('.sources-grid');
+const arrows = document.querySelectorAll('.arrow-btn');
+
+arrows.forEach(arrow => {
+    arrow.addEventListener('click', () => {
+        const scrollAmount = window.innerWidth > 768 ? 400 : 300;
+        sourcesGrid.scrollBy({
+            left: arrow.classList.contains('left-arrow') ? -scrollAmount : scrollAmount,
+            behavior: 'smooth'
+        });
+    });
+});
+
+// Update indikator scroll
+sourcesGrid.addEventListener('scroll', () => {
+    const dots = document.querySelectorAll('.scroll-dot');
+    const scrollPercentage = sourcesGrid.scrollLeft / (sourcesGrid.scrollWidth - sourcesGrid.clientWidth);
+    
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === Math.round(scrollPercentage * (dots.length - 1)));
+    });
+});
 
 window.addEventListener('DOMContentLoaded', () => {
         generatePreviews();
