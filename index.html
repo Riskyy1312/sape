@@ -433,6 +433,15 @@
     padding: 0 0.5rem;
 }
 
+.sources-container {
+    margin-bottom: 30px;
+}
+
+.sources-container:hover .arrow-btn {
+    opacity: 1;
+    transform: scale(1);
+}
+
 .source-content h3 {
     font-size: 1.2em;
     margin-bottom: 0.3rem;
@@ -474,7 +483,8 @@
 .scroll-dots {
     display: none;
     position: absolute;
-    bottom: -30px;
+    bottom: -40px; /* Tambah jarak 10px dari konten */
+    padding: 12px 0;
     left: 50%;
     transform: translateX(-50%);
     gap: 8px;
@@ -503,6 +513,7 @@
     width: 100%;
     justify-content: space-between;
     pointer-events: none;
+    padding: 0 20px;
 }
 
 .arrow-btn {
@@ -515,9 +526,12 @@
     display: grid;
     place-items: center;
     cursor: pointer;
-    opacity: 0;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    opacity: 0.5; /* Visibilitas awal */
+    transform: scale(0.9);
+    z-index: 10; /* Pastikan di atas konten */
+    margin: 0 15px;
 }
 
 .arrow-btn:hover {
@@ -530,10 +544,15 @@
 @media (max-width: 768px) {
     .scroll-dots {
         display: flex;
+        bottom: -25px;
     }
     
     .sources-grid {
         scrollbar-width: none;
+    }
+
+    .sources-container {
+        margin-bottom: 20px;
     }
 }
 
