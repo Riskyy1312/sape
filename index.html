@@ -1319,7 +1319,7 @@ function updateActiveDot() {
     });
 
     const maxScroll = sourcesGrid.scrollWidth - sourcesGrid.clientWidth;
-    if (sourcesGrid.scrollLeft >= maxScroll - 10) { // Toleransi 10px
+    if (sourcesGrid.scrollLeft >= maxScroll - 10) {
         activeIndex = cards.length - 1;
     }
 
@@ -1350,15 +1350,27 @@ const HF_API_KEY = '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';
 const MODEL_NAME = 'meta-llama/Meta-Llama-3-8B-Instruct';
 
 async function getAIResponse(question) {
-    // Ganti format prompt di fungsi getAIResponse menjadi:
-const prompt = `<|system|>
-Anda adalah ahli budaya Dayak. Jawablah dalam bahasa Indonesia yang santai dan mudah dimengerti.
-</s>
-<|user|>
-${question}
-</s>
-<|assistant|>`;
+ 
+const prompt = `[INST] <<SYS>>
+Anda adalah asisten AI dalam website edukasi budaya yang bertugas menjawab pertanyaan tentang alat musik tradisional Sape khas Dayak. 
 
+Instruksi:
+1. Gunakan bahasa Indonesia formal yang jelas dan mudah dipahami
+2. Sampaikan informasi faktual dengan akurat
+3. Susun jawaban secara terstruktur (pendahuluan, isi, penutup)
+4. Gunakan istilah budaya yang tepat (contoh: Gawai, Lamin, Hudoq)
+5. Jika pertanyaan di luar topik, jelaskan secara sopan dan arahkan ke konteks Sape
+
+Contoh jawaban yang diharapkan:
+"Alat musik Sape dalam budaya Dayak memiliki fungsi yang sakral. Berdasarkan penelitian Budiono et al (2022), Sape tradisional umumnya dibuat dari kayu ulin berusia matang melalui proses..."
+
+<</SYS>>
+
+Pertanyaan Pengguna: 
+${question} 
+
+Berikan jawaban yang informatif dan sesuai konteks:[/INST]`;
+    
     try {
         const response = await fetch(
             `https://api-inference.huggingface.co/models/${MODEL_NAME}`,
@@ -1384,13 +1396,12 @@ ${question}
         if (data.error) {
             throw new Error(data.error);
         }
-        
-        // Bersihkan output dari karakter khusus
+       
         let cleanedText = data[0]?.generated_text
-            .replace(/<\/?s>/g, '') // Hapus tag khusus
-            .replace(/(\d\.\s*){2,}/g, '') // Hapus enumerasi berulang
-            .replace(/[|]/g, '') // Hapus karakter pipe
-            .replace(/(\s){2,}/g, ' '); // Hapus spasi berlebihan
+            .replace(/<\/?s>/g, '')
+            .replace(/(\d\.\s*){2,}/g, '')
+            .replace(/[|]/g, '')
+            .replace(/(\s){2,}/g, ' ');
 
         return cleanedText || "Maaf, saya tidak bisa menjawab pertanyaan itu saat ini";
 
@@ -1426,7 +1437,7 @@ document.getElementById('sendButton').addEventListener('click', async () => {
 
     const chatMessages = document.getElementById('chatMessages');
     
-    const chatContainer = document.getElementById('chatContainer'); // Ambil container
+    const chatContainer = document.getElementById('chatContainer');
     
     if(chatMessages.children.length === 0) {
         chatCard.classList.add('active');
