@@ -624,23 +624,29 @@
     backdrop-filter: blur(10px);
 }
 
-.chat-input {
+.chat-inp,, ut {
     display: flex;
     gap: 8px;
     background: var(--bg);
     border-radius: 50px;
     border: 1px solid var(--border);
     padding: 8px;
+    align-items: center;,z
 }
 
 .chat-input input {
     flex: 1;
+    min-width: 0;
     padding: 12px 20px;
     border: none;
     background: transparent;
     color: var(--text);
     font-size: 0.95em;
     border-radius: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: all 0.3s ease;
 }
 
 .send-btn {
@@ -652,6 +658,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     margin-right: 6px;
+    flex-shrink: 0;
 }
 
 .send-btn:hover {
@@ -859,6 +866,10 @@
         padding: 3px 6px;
         font-size: 0.9em;
     }
+
+    .chat-input {
+        padding: 4px 8px;
+    }
     
     .chat-input-container {
         padding: 3px;
@@ -867,9 +878,17 @@
     .chat-input input {
         padding: -3px -6px;
         font-size: 0.9em;
+        padding-right: 60px;
+        width: calc(100% - 60px); 
     }
     
     .send-btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        margin: 0;
+        padding: 8px 16px;
         width: 45px;
         height: 45px;
     }
