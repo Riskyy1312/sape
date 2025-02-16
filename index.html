@@ -615,7 +615,7 @@
 }
 
 .chat-input-container {
-    position: sticky;
+    position: bottom;
     bottom: 0;
     background: var(--card-bg);
     padding: 15px;
@@ -728,6 +728,10 @@
     display: flex;
     justify-content: flex-end;
     margin: 8px 0;
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    border-radius: 20px 20px 4px 20px;
 }
 
 .message-bubble {
@@ -854,8 +858,8 @@
     }
     
     .message-bubble {
-        max-width: 90%;
-        padding: 10px 15px;
+        max-width: 100%;
+        padding: 3px 6px;
         font-size: 0.9em;
     }
     
@@ -864,18 +868,18 @@
     }
     
     .chat-input input {
-        padding: 3px 6px;
+        padding: -3px -6px;
         font-size: 0.9em;
     }
     
     .send-btn {
-        width: 45px;
-        height: 45px;
+        width: 30px;
+        height: 30px;
     }
     
     .model-label {
-        right: 10px;
-        bottom: -2px;
+        right: 0px;
+        bottom: -10px;
         font-size: 0.7em;
     }
 }
