@@ -1351,25 +1351,15 @@ const MODEL_NAME = 'meta-llama/Meta-Llama-3-8B-Instruct';
 
 async function getAIResponse(question) {
  
-const prompt = `[INST] <<SYS>>
-Anda adalah asisten AI dalam website edukasi budaya yang bertugas menjawab pertanyaan tentang alat musik tradisional Sape khas Dayak. 
+const prompt = `<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+Anda adalah asisten ahli budaya Dayak yang membantu menjelaskan tentang alat musik Sape. 
+Gunakan bahasa Indonesia formal namun mudah dipahami. 
+Jika ada pertanyaan di luar topik, jelaskan dengan sopan.<|eot_id|>
 
-Instruksi:
-1. Gunakan bahasa Indonesia formal yang jelas dan mudah dipahami
-2. Sampaikan informasi faktual dengan akurat
-3. Susun jawaban secara terstruktur (pendahuluan, isi, penutup)
-4. Gunakan istilah budaya yang tepat (contoh: Gawai, Lamin, Hudoq)
-5. Jika pertanyaan di luar topik, jelaskan secara sopan dan arahkan ke konteks Sape
+<|start_header_id|>user<|end_header_id|>
+${question}<|eot_id|>
 
-Contoh jawaban yang diharapkan:
-"Alat musik Sape dalam budaya Dayak memiliki fungsi yang sakral. Berdasarkan penelitian Budiono et al (2022), Sape tradisional umumnya dibuat dari kayu ulin berusia matang melalui proses..."
-
-<</SYS>>
-
-Pertanyaan Pengguna: 
-${question} 
-
-Berikan jawaban yang informatif dan sesuai konteks:[/INST]`;
+<|start_header_id|>assistant<|end_header_id|>`;
     
     try {
         const response = await fetch(
@@ -1380,14 +1370,17 @@ Berikan jawaban yang informatif dan sesuai konteks:[/INST]`;
                     "Authorization": `Bearer ${HF_API_KEY}`,
                     "Content-Type": "application/json"
                 },
+                
                 body: JSON.stringify({
-                    inputs: prompt,
-                    parameters: {
-                        max_new_tokens: 500,
-                        temperature: 0.7,
-                        return_full_text: false
-                    }
-                })
+                inputs: prompt,
+                parameters: {
+                max_new_tokens: 300,
+                temperature: 0.5,
+                repetition_penalty: 1.2,
+                top_p: 0.9,
+                return_full_text: false
+                }
+              })
             }
         );
 
