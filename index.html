@@ -1374,13 +1374,10 @@ ${question}<|eot_id|>
                 body: JSON.stringify({
                 inputs: prompt,
                 parameters: {
-                max_new_tokens: 1000,
-                temperature: 0.3,
-                repetition_penalty: 1.5,
-                top_k: 50,
-                top_p: 0.95,
-                truncation: false,
-                do_sample: true,
+                max_new_tokens: 500,
+                temperature: 0.5,
+                repetition_penalty: 1.2,
+                top_p: 0.9,
                 return_full_text: false
                 }
               })
