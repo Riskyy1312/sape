@@ -1331,11 +1331,14 @@ const HF_API_KEY = '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';
 const MODEL_NAME = 'meta-llama/Meta-Llama-3-8B-Instruct';
 
 async function getAIResponse(question) {
-    const prompt = `[INST] <<SYS>>
-    Anda adalah asisten ahli budaya Dayak. Jawablah dalam bahasa Indonesia yang santai dan mudah dimengerti.
-    <</SYS>>
-    
-    Pertanyaan: ${question} [/INST]`;
+    // Ganti format prompt di fungsi getAIResponse menjadi:
+const prompt = `<|system|>
+Anda adalah ahli budaya Dayak. Jawablah dalam bahasa Indonesia yang santai dan mudah dimengerti.
+</s>
+<|user|>
+${question}
+</s>
+<|assistant|>`;
 
     try {
         const response = await fetch(
