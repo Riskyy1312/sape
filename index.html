@@ -570,17 +570,19 @@
 }
 
 .ai-chatbot {
-    min-height: 150px;
     transition: all 0.3s ease-in-out;
     background: var(--card-bg);
     border-radius: 20px;
     padding: 2rem;
     margin-top: 2rem;
+    padding-bottom: 80px;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     position: relative;
     min-height: 400px;
+    max-height: 70vh;
+    overflow: hidden;
 }
 
 .ai-chatbot.active {
@@ -591,9 +593,11 @@
     display: none;
     flex-direction: column;
     gap: 1rem;
-    height: 400px;
+    height: calc(100% - 60px);
     overflow-y: auto;
     padding-right: 8px;
+    padding: 15px;
+    scroll-behavior: smooth;
 }
 
 .chat-container.active {
@@ -614,8 +618,10 @@
     position: sticky;
     bottom: 0;
     background: var(--card-bg);
+    padding: 15px;
     padding-top: 1rem;
     border-top: 1px solid var(--border);
+    backdrop-filter: blur(10px);
 }
 
 .chat-input {
@@ -662,6 +668,12 @@
     position: relative;
 }
 
+.ai-message .message-bubble {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px 20px 20px 4px;
+}
+
 @keyframes fadeInUp {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -669,7 +681,7 @@
 
 .loading-indicator {
     position: absolute;
-    top: -40px;
+    top: 0px;
     left: 0;
     right: 0;
     text-align: center;
@@ -712,37 +724,29 @@
     to { width: 100% }
 }
 
-.chat-input-container {
-    background: var(--bg);
-    border-radius: 50px;
-    border: 1px solid var(--border);
-    padding: 4px;
-}
-
 .user-message {
     display: flex;
     justify-content: flex-end;
     margin: 8px 0;
 }
 
-.ai-message {
-    display: flex;
-    justify-content: flex-start;
-    margin: 8px 0;
-}
-
 .message-bubble {
-    max-width: 70%;
-    padding: 12px 16px;
-    border-radius: 15px;
+    max-width: 85%;
+    padding: 12px 18px;
+    border-radius: 20px;
     background: var(--card-bg);
     border: 1px solid var(--border);
+    margin: 8px 0;
+    position: relative;
+    animation: fadeIn 0.3s ease;
 }
 
 .user-message .message-bubble {
     background: var(--accent);
     color: white;
     border-color: var(--accent);
+    border-radius: 20px 20px 4px 20px;
+    margin-left: auto;
 }
 
 .error-message .message-bubble {
@@ -840,6 +844,45 @@
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .ai-chatbot {
+        min-height: 300px;
+        max-height: 65vh;
+        padding: 10px;
+    }
+    
+    .message-bubble {
+        max-width: 90%;
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+    
+    .chat-input-container {
+        padding: 10px;
+    }
+    
+    .chat-input input {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+    
+    .send-btn {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .model-label {
+        right: 50px;
+        bottom: 6px;
+        font-size: 0.7em;
+    }
+}
+
+@keyframes smoothScroll {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .chat-messages:empty {
@@ -1086,7 +1129,7 @@
             <div class="card" data-aos="fade-up">
                 <h2>Ada yang mau bertanya?</h2>
                 <div class="deco-line"></div>
-                <h2 style="font-size: 26px; margin-bottom: -30px;">Kalo ga tau nanti ku-</h2>
+                <h3>Atau mau tanya langsung ke Meta AI!</h3>
                 
                 <div class="ai-chatbot">
                     <div class="chat-container" id="chatContainer">
@@ -1334,6 +1377,9 @@ async function typeResponse(text, element) {
             element.innerHTML += text.charAt(index);
             index++;
             setTimeout(addCharacter, 20);
+
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            element.classList.add('auto-scroll');
         }
     }
     
@@ -1360,6 +1406,11 @@ document.getElementById('sendButton').addEventListener('click', async () => {
     userDiv.textContent = question;
     chatMessages.appendChild(userDiv);
 
+    chatContainer.scrollTo({
+            top: chatContainer.scrollHeight,
+            behavior: 'smooth'
+        });
+
     document.querySelector('.loading-indicator').classList.add('active');
     document.getElementById('userInput').value = '';
 
@@ -1384,6 +1435,15 @@ document.getElementById('userInput').addEventListener('keypress', (e) => {
     if(e.key === 'Enter') {
         document.getElementById('sendButton').click();
     }
+});
+
+document.getElementById('userInput').addEventListener('focus', () => {
+    setTimeout(() => {
+        chatContainer.scrollTo({
+            top: chatContainer.scrollHeight,
+            behavior: 'smooth'
+        });
+    }, 300);
 });
     
     </script>
