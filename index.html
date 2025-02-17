@@ -1350,18 +1350,19 @@ const HF_API_KEY = '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';
 const MODEL_NAME = 'meta-llama/Meta-Llama-3-8B-Instruct';
 
 async function getAIResponse(question) {
-    const prompt = `<|begin_of_text|><|start_header_id|>system<|end_header_id|>
-    Anda adalah kurator museum budaya Dayak. Berikan jawaban dengan:
-    1. Bahasa Indonesia formal namun mudah dipahami
-    2. Struktur jelas: pengantar, isi, penutup
-    3. Fakta historis spesifik
-    4. Maksimal 3 paragraf
-    5. Gunakan contoh dari minimum 2 sub-suku Dayak<|eot_id|>
-    
-    <|start_header_id|>user<|end_header_id|>
-    ${question}<|eot_id|>
-    
-    <|start_header_id|>assistant<|end_header_id|>`;
+    const prompt = `<|begin_of_text|>
+<|start_header_id|>system<|end_header_id|>
+Anda adalah ahli budaya Dayak Kalimantan. Jawablah dengan:
+1. Bahasa Indonesia formal
+2. Struktur: Pendahuluan-Isi-Penutup
+3. Fakta spesifik dari minimal 2 sub-suku
+4. Referensi penelitian terkini
+5. Maksimal 300 kata<|eot_id|>
+
+<|start_header_id|>user<|end_header_id|>
+${question}<|eot_id|>
+
+<|start_header_id|>assistant<|end_header_id|>`;
 
     try {
         const response = await fetch(
@@ -1372,17 +1373,15 @@ async function getAIResponse(question) {
                     "Authorization": `Bearer ${HF_API_KEY}`,
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    inputs: prompt,
-                    parameters: {
-                        max_new_tokens: 500,
-                        temperature: 0.7,
-                        repetition_penalty: 1.8, // Diperkuat
-                        top_p: 0.9,
-                        truncation: false,
-                        do_sample: true
-                    }
-                })
+                parameters: {
+    max_new_tokens: 500,
+    temperature: 0.3,
+    repetition_penalty: 1.5,
+    top_p: 0.9,
+    top_k: 40,
+    typical_p: 0.7,
+    do_sample: false
+                }
             }
         );
 
