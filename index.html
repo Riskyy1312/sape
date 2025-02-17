@@ -1350,132 +1350,115 @@ const HF_API_KEY = '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';
 const MODEL_NAME = 'meta-llama/Meta-Llama-3-8B-Instruct';
 
 async function getAIResponse(question) {
-    const prompt = `<|begin_of_text|>
-<|start_header_id|>system<|end_header_id|>
-Anda adalah ahli budaya Dayak Kalimantan. Jawablah dengan:
-1. Bahasa Indonesia formal
-2. Struktur: Pendahuluan-Isi-Penutup
-3. Fakta spesifik dari minimal 2 sub-suku
-4. Referensi penelitian terkini
-5. Maksimal 300 kata<|eot_id|>
-
-<|start_header_id|>user<|end_header_id|>
-${question}<|eot_id|>
-
-<|start_header_id|>assistant<|end_header_id|>`;
+    const prompt = `<|system|>
+Anda adalah ahli budaya Dayak. Jawablah dalam bahasa Indonesia yang santai dan mudah dimengerti.
+</s>
+<|user|>
+${question}
+</s>
+<|assistant|>`;
 
     try {
         const response = await fetch(
-            `https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct`,
+            `https://api-inference.huggingface.co/models/${MODEL_NAME}`,
             {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${HF_API_KEY}`,
                     "Content-Type": "application/json"
                 },
-                parameters: {
-    max_new_tokens: 500,
-    temperature: 0.3,
-    repetition_penalty: 1.5,
-    top_p: 0.9,
-    top_k: 40,
-    typical_p: 0.7,
-    do_sample: false
-                }
+                body: JSON.stringify({
+                    inputs: prompt,
+                    parameters: {
+                        max_new_tokens: 500,
+                        temperature: 0.7,
+                        return_full_text: false
+                    }
+                })
             }
         );
 
         const data = await response.json();
         
-        // Enhanced cleaning
-        let cleaned = data[0]?.generated_text
-            .replace(/<\|.*?\|>/g, '')
-            .replace(/(\S)\1{3,}/g, '$1')
-            .replace(/(?:Jawaban:|Pertanyaan:).*/g, '')
-            .replace(/\s{2,}/g, ' ')
-            .trim();
-
-        // Auto-complete unfinished sentences
-        const lastPunct = cleaned.match(/[.!?](?!.*[.!?])/);
-        if(!lastPunct) cleaned += '...';
-
-        return cleaned || "Maaf, saya mengalami kesalahan teknis. Silakan coba lagi.";
-
-    } catch(error) {
-        console.error("Error:", error);
-        return "Terjadi gangguan sistem. Silakan refresh halaman.";
-    }
-}
-
-async function typeResponse(text, element) {
-    element.innerHTML = '';
-    let index = 0;
-    
-    function addCharacter() {
-        if(index < text.length) {
-            element.innerHTML += text.charAt(index);
-            index++;
-            setTimeout(addCharacter, 20);
-
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-            element.classList.add('auto-scroll');
+        if (data.error) {
+            throw new Error(data.error);
         }
+        
+        // Bersihkan output dari karakter khusus
+        let cleanedText = data[0]?.generated_text
+            .replace(/<\/?s>/g, '') // Hapus tag khusus
+            .replace(/(\d\.\s*){2,}/g, '') // Hapus enumerasi berulang
+            .replace(/[|]/g, '') // Hapus karakter pipe
+            .replace(/(\s){2,}/g, ' '); // Hapus spasi berlebihan
+
+        return cleanedText || "Maaf, saya tidak bisa menjawab pertanyaan itu saat ini";
+
+    } catch (error) {
+        console.error('Error:', error);
+        return `⚠️ Error: ${error.message}`;
     }
-    
-    addCharacter();
 }
 
-document.getElementById('sendButton').addEventListener('click', async () => {
+// Update event handler untuk tombol kirim
+document.querySelector('.send-btn').addEventListener('click', async () => {
     const question = document.getElementById('userInput').value.trim();
     if(!question) return;
 
-    const chatCard = document.querySelector('.ai-chatbot');
-
     const chatMessages = document.getElementById('chatMessages');
     
-    const chatContainer = document.getElementById('chatContainer');
-    
-    if(chatMessages.children.length === 0) {
-        chatCard.classList.add('active');
-        chatContainer.classList.add('active');
-    }
-
+    // Tambah pesan user
     const userDiv = document.createElement('div');
     userDiv.className = 'user-message';
-    userDiv.textContent = question;
+    userDiv.innerHTML = `
+        <div class="message-bubble">${question}</div>
+    `;
     chatMessages.appendChild(userDiv);
 
-    chatContainer.scrollTo({
-            top: chatContainer.scrollHeight,
-            behavior: 'smooth'
-        });
+    // Tambah placeholder AI
+    const aiDiv = document.createElement('div');
+    aiDiv.className = 'ai-message';
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    aiDiv.appendChild(bubble);
+    chatMessages.appendChild(aiDiv);
 
-    document.querySelector('.loading-indicator').classList.add('active');
+    // Tampilkan loading
+    document.querySelector('.loading-indicator').style.display = 'flex';
     document.getElementById('userInput').value = '';
-
+    
     try {
         const response = await getAIResponse(question);
         
-        const aiDiv = document.createElement('div');
-        aiDiv.className = 'ai-message';
-        chatMessages.appendChild(aiDiv);
+        // Animasi ketik
+        bubble.textContent = '';
+        let index = 0;
+        const typingEffect = setInterval(() => {
+            if(index < response.length) {
+                bubble.textContent += response.charAt(index);
+                index++;
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } else {
+                clearInterval(typingEffect);
+            }
+        }, 30);
         
-        document.querySelector('.loading-indicator').classList.remove('active');
-        await typeResponse(response, aiDiv);
-        
-        chatContainer.scrollTop = chatContainer.scrollHeight;
     } catch(error) {
-        console.error('Error:', error);
-        document.querySelector('.loading-indicator').classList.remove('active');
+        bubble.textContent = "Maaf terjadi kesalahan. Silakan coba lagi.";
+        bubble.classList.add('error-message');
     }
+    
+    // Sembunyikan loading
+    document.querySelector('.loading-indicator').style.display = 'none';
 });
 
+// Handle Enter key
 document.getElementById('userInput').addEventListener('keypress', (e) => {
-    if(e.key === 'Enter') {
-        document.getElementById('sendButton').click();
+    if(e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        document.querySelector('.send-btn').click();
     }
 });
-
+        
 document.getElementById('userInput').addEventListener('focus', () => {
     setTimeout(() => {
         chatContainer.scrollTo({
