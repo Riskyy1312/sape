@@ -1350,57 +1350,61 @@ const HF_API_KEY = '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';
 const MODEL_NAME = 'meta-llama/Meta-Llama-3-8B-Instruct';
 
 async function getAIResponse(question) {
- 
-const prompt = `<|begin_of_text|><|start_header_id|>system<|end_header_id|>
-Anda adalah asisten ahli budaya Dayak yang membantu menjelaskan tentang alat musik Sape. 
-Gunakan bahasa Indonesia formal namun mudah dipahami. 
-Jika ada pertanyaan di luar topik, jelaskan dengan sopan.<|eot_id|>
-
-<|start_header_id|>user<|end_header_id|>
-${question}<|eot_id|>
-
-<|start_header_id|>assistant<|end_header_id|>`;
+    const prompt = `<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+    Anda adalah kurator museum budaya Dayak. Berikan jawaban dengan:
+    1. Bahasa Indonesia formal namun mudah dipahami
+    2. Struktur jelas: pengantar, isi, penutup
+    3. Fakta historis spesifik
+    4. Maksimal 3 paragraf
+    5. Gunakan contoh dari minimum 2 sub-suku Dayak<|eot_id|>
     
+    <|start_header_id|>user<|end_header_id|>
+    ${question}<|eot_id|>
+    
+    <|start_header_id|>assistant<|end_header_id|>`;
+
     try {
         const response = await fetch(
-            `https://api-inference.huggingface.co/models/${MODEL_NAME}`,
+            `https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct`,
             {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${HF_API_KEY}`,
                     "Content-Type": "application/json"
                 },
-                
                 body: JSON.stringify({
-                inputs: prompt,
-                parameters: {
-                max_new_tokens: 300,
-                temperature: 0.5,
-                repetition_penalty: 1.2,
-                top_p: 0.9,
-                return_full_text: false
-                }
-              })
+                    inputs: prompt,
+                    parameters: {
+                        max_new_tokens: 500,
+                        temperature: 0.7,
+                        repetition_penalty: 1.8, // Diperkuat
+                        top_p: 0.9,
+                        truncation: false,
+                        do_sample: true
+                    }
+                })
             }
         );
 
         const data = await response.json();
         
-        if (data.error) {
-            throw new Error(data.error);
-        }
-       
-        let cleanedText = data[0]?.generated_text
-            .replace(/<\/?s>/g, '')
-            .replace(/(\d\.\s*){2,}/g, '')
-            .replace(/[|]/g, '')
-            .replace(/(\s){2,}/g, ' ');
+        // Enhanced cleaning
+        let cleaned = data[0]?.generated_text
+            .replace(/<\|.*?\|>/g, '')
+            .replace(/(\S)\1{3,}/g, '$1')
+            .replace(/(?:Jawaban:|Pertanyaan:).*/g, '')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
 
-        return cleanedText || "Maaf, saya tidak bisa menjawab pertanyaan itu saat ini";
+        // Auto-complete unfinished sentences
+        const lastPunct = cleaned.match(/[.!?](?!.*[.!?])/);
+        if(!lastPunct) cleaned += '...';
 
-    } catch (error) {
-        console.error('Error:', error);
-        return `⚠️ Error: ${error.message}`;
+        return cleaned || "Maaf, saya mengalami kesalahan teknis. Silakan coba lagi.";
+
+    } catch(error) {
+        console.error("Error:", error);
+        return "Terjadi gangguan sistem. Silakan refresh halaman.";
     }
 }
 
