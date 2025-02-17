@@ -1351,13 +1351,6 @@ const MODEL_NAME = 'meta-llama/Meta-Llama-3-8B-Instruct';
 
 // Fungsi Utama
 async function getAIResponse(question) {
-    // Validasi API Key
-    if (!HF_API_KEY || HF_API_KEY === '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') {
-        alert('API Key tidak valid! Silakan gunakan key Anda sendiri');
-        return;
-    }
-
-    // Format Prompt
     const prompt = `[INST] 
 <<SYS>>
 Anda adalah ahli budaya Dayak. Jawablah dalam bahasa Indonesia yang santai dan mudah dimengerti.
